@@ -1,0 +1,110 @@
+{
+  // Editor
+  "editor.fontFamily": "Ricty Diminished",
+  "editor.fontSize": 16,
+  "editor.tabSize": 2,
+  "editor.renderWhitespace": "all",
+  "editor.wordWrap": "on",
+  "editor.autoIndent": "full",
+  "editor.renderControlCharacters": true,
+  "editor.tabCompletion": "onlySnippets",
+  "editor.renderLineHighlight": "all",
+  "editor.minimap.enabled": false,
+  "editor.colorDecorators": false,
+  "editor.multiCursorModifier": "ctrlCmd",
+  "editor.snippetSuggestions": "top",
+
+  // Files
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true
+  },
+  "files.associations": {
+      "*.erb": "erb"
+  },
+
+  // Workbench
+  "workbench.colorTheme": "Nord",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.editor.labelFormat": "long",
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.settings.editor": "json",
+  "workbench.settings.openDefaultSettings": true,
+  "workbench.settings.useSplitJSON": true,
+  "workbench.startupEditor": "none",
+  "workbench.editor.enablePreview": false,
+
+  // Search
+  "search.showLineNumbers": true,
+  "search.smartCase": true,
+
+  // Debug
+  "debug.console.fontFamily": "Source Code Pro for Powerline",
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  // Terminal
+  "terminal.external.osxExec": "iTerm.app",
+  "terminal.integrated.confirmOnExit": true,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.fontFamily": "Source Code Pro for Powerline",
+  "terminal.integrated.rightClickBehavior": "copyPaste",
+
+  // Git
+  "diffEditor.renderSideBySide": false,
+
+  // Window
+  "window.openFoldersInNewWindow": "on",
+
+  // Beautify
+  "beautify.language": {
+      "js": {
+          "type": ["javascript", "json",],
+          "filename": [".jshintrc", ".jsbeautifyrc"]
+      },
+      "css": ["css", "less", "scss"],
+      "html": ["htm", "html", "erb"]
+  },
+
+  // Emmet
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.variables": {"lang": "ja"},
+  "emmet.showSuggestionsAsSnippets": true,
+  "emmet.includeLanguages": {
+      "erb": "html"
+  },
+
+  // HTML
+  "html.format.indentHandlebars": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.endWithNewline": true,
+
+  // Markdown
+  "[markdown]": {
+      "editor.wordWrap": "on",
+      "editor.quickSuggestions": false,
+      "files.trimTrailingWhitespace": false
+  },
+
+  // Ruby
+  "[ruby]": {
+      "editor.tabSize": 2,
+      "editor.formatOnSave": true
+  },
+  "ruby.intellisense": "rubyLocate",
+  "ruby.useLanguageServer": false,
+
+  // Ruby Language Server
+  "solargraph.useBundler": true,
+  "solargraph.diagnostics": true,
+  "solargraph.hover": true,
+  "solargraph.definitions": true
+}
