@@ -5,6 +5,9 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to respond_to(:name) }
   it { is_expected.to respond_to(:email) }
+  it { is_expected.to respond_to(:password_digest) }
+  it { is_expected.to respond_to(:password) }
+  it { is_expected.to respond_to(:password_confirmation) }
 
   it { is_expected.to be_valid }
 
@@ -58,6 +61,28 @@ RSpec.describe User, type: :model do
         user_with_same_email.save
       end
 
+      it { is_expected.to be_invalid }
+    end
+  end
+
+  describe 'password_digest' do
+    describe 'when password is not present' do
+      before { user.password = user.password_confirmation = '' }
+      it { is_expected.to be_invalid }
+    end
+
+    describe "when password doesn't match confirmation" do
+      before { user.password_confirmation = '' }
+      it { is_expected.to be_invalid }
+    end
+
+    describe 'when password is blank' do
+      before { user.password = user.password_confirmation = ' ' * 6 }
+      it { is_expected.to be_invalid }
+    end
+
+    describe 'when password length too short' do
+      before { user.password = user.password_confirmation = 'a' * 5 }
       it { is_expected.to be_invalid }
     end
   end
