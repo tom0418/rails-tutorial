@@ -5,37 +5,39 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.1.6'
-gem 'bcrypt', '~> 3.1', '>= 3.1.13'
-gem 'mysql2', '>= 0.3.18', '< 0.6.0'
-gem 'puma', '~> 3.7'
-gem 'sass-rails', '~> 5.0'
-gem 'bootstrap-sass', '~> 3.4', '>= 3.4.1'
-gem 'uglifier', '>= 1.3.0'
+gem 'rails', '~> 5.2.4.2'
+gem 'bcrypt'
+gem 'mysql2'
+gem 'puma'
+gem 'sass-rails'
+gem 'bootstrap-sass'
+gem 'uglifier'
 
-gem 'coffee-rails', '~> 4.2'
-gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
+gem 'coffee-rails'
+gem 'turbolinks'
+gem 'jbuilder'
+
+gem 'bootsnap', require: false
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'pry', '~> 0.13.0'
-  gem 'pry-byebug', '~> 3.9'
-  gem 'pry-rails', '~> 0.3.9'
-  gem 'capybara', '~> 2.13'
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'pry-rails'
+  gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
-  gem 'factory_bot_rails', '~> 5.1', '>= 5.1.1'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
 end
 
 group :development do
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console'
+  gem 'listen'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'better_errors', '~> 2.6'
-  gem 'rubocop', '~> 0.80.1', require: false
-  gem 'rubocop-rails', '~> 2.4', '>= 2.4.2', require: false
+  gem 'spring-watcher-listen'
+  gem 'better_errors'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
   gem 'solargraph'
 end
 
