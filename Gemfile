@@ -14,6 +14,7 @@ gem 'bootstrap-sass'
 gem 'uglifier'
 
 gem 'coffee-rails'
+gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder'
 
@@ -40,6 +41,10 @@ group :development do
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
   gem 'solargraph'
+end
+
+group :test do
+  gem 'rails-controller-testing'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
