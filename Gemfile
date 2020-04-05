@@ -40,6 +40,8 @@ group :development do
   gem 'binding_of_caller'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
+  gem 'debase'
+  gem 'ruby-debug-ide'
 end
 
 group :test do
