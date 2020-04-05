@@ -40,7 +40,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
-  gem 'solargraph'
 end
 
 group :test do
