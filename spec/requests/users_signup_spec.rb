@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Users sign up', type: :request do
-  example 'valid sign up information' do
+RSpec.describe 'Users signup', type: :request do
+  example 'valid signup information' do
     get signup_path
     expect {
       post users_path, params: { user: { name: 'Example User',

@@ -8,31 +8,35 @@ RSpec.describe User, type: :model do
   it { is_expected.to respond_to(:password_digest) }
   it { is_expected.to respond_to(:password) }
   it { is_expected.to respond_to(:password_confirmation) }
+  it { is_expected.to respond_to(:remember_digest) }
+  it { is_expected.to respond_to(:remember_token) }
   it { is_expected.to respond_to(:authenticate) }
-
+  it { is_expected.to respond_to(:remember) }
+  it { is_expected.to respond_to(:authenticated?) }
+  it { is_expected.to respond_to(:forget) }
   it { is_expected.to be_valid }
 
   describe 'name' do
     describe 'when name is not present' do
       before { user.name = '' }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe 'when name is too long' do
       before { user.name = 'a' * 51 }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
   end
 
   describe 'email' do
     describe 'when email is not present' do
       before { user.email = '' }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe 'when email is too long' do
       before { user.email = 'a' * 244 + '@example.com' }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe 'when email format is invalid' do
@@ -40,7 +44,7 @@ RSpec.describe User, type: :model do
         addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar.com foo@bar+baz.com foo@bar..com]
         addresses.each do |invalid_address|
           user.email = invalid_address
-          expect(user).to be_invalid
+          expect(user).to_not be_valid
         end
       end
     end
@@ -62,29 +66,29 @@ RSpec.describe User, type: :model do
         user_with_same_email.save
       end
 
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
   end
 
   describe 'password_digest' do
     describe 'when password is not present' do
       before { user.password = user.password_confirmation = '' }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe "when password doesn't match confirmation" do
       before { user.password_confirmation = '' }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe 'when password is blank' do
       before { user.password = user.password_confirmation = ' ' * 6 }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
 
     describe 'when password length too short' do
       before { user.password = user.password_confirmation = 'a' * 5 }
-      it { is_expected.to be_invalid }
+      it { is_expected.to_not be_valid }
     end
   end
 
@@ -98,9 +102,10 @@ RSpec.describe User, type: :model do
 
     describe 'with invalid password' do
       let(:user_for_invalid_password) { found_user.authenticate('invalid') }
-
-      it { is_expected.not_to eq user_for_invalid_password }
+      it { is_expected.to_not eq user_for_invalid_password }
       specify { expect(user_for_invalid_password).to be_falsey }
     end
   end
+
+  # TODO: remember_digestが存在しない時のテストを書く
 end
