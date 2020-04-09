@@ -1,5 +1,8 @@
-module RequestHelpers
-  def is_logged_in?
-    !session[:user_id].nil?
+module Requests
+  module AuthenticationHelper
+    def is_signed_in?
+      !session[:user_id].nil?
+    end
   end
 end
+
