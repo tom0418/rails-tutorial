@@ -6,7 +6,7 @@ RSpec.describe 'Sessions' , type: :request do
 
   describe '#create' do
     context '有効な入力情報の時' do
-      example 'サインインできること' do
+      it 'サインインできること' do
         valid_sign_in(signin_path)
         expect(response).to redirect_to user
         expect(is_signed_in?).to be_truthy
@@ -14,7 +14,7 @@ RSpec.describe 'Sessions' , type: :request do
     end
 
     context '無効な入力情報の時' do
-      example 'サインインできないこと' do
+      it 'サインインできないこと' do
         invalid_sign_in(signin_path)
         expect(response).to render_template('sessions/new')
         expect(is_signed_in?).to be_falsey
@@ -24,7 +24,7 @@ RSpec.describe 'Sessions' , type: :request do
 
   describe '#destroy' do
     context '有効な情報でログインしてからサインアウトする時' do
-      example 'サインアウトできること' do
+      it 'サインアウトできること' do
         valid_sign_in(signin_path)
         expect(is_signed_in?).to be_truthy
         expect(response).to redirect_to user

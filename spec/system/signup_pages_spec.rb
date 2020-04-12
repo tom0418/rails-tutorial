@@ -11,7 +11,7 @@ RSpec.describe 'Sign up', type: :system do
         fill_in 'Confirmation', with: 'password'
       end
 
-      example 'サインアップできること' do
+      it 'サインアップできること' do
         expect { click_button 'Create my account' }.to change(User, :count).by(1)
         user = User.last
         expect(current_path).to eq(user_path(user))
@@ -33,7 +33,7 @@ RSpec.describe 'Sign up', type: :system do
         fill_in 'Confirmation', with: 'invalid'
       end
 
-      example "'The form contains 1 error.'と表示されること" do
+      it "'The form contains 1 error.'と表示されること" do
         expect { click_button 'Create my account' }.to change(User, :count).by(0)
         expect(page).to have_selector('div.alert.alert-danger', text: 'The form contains 1 error.')
       end
@@ -48,7 +48,7 @@ RSpec.describe 'Sign up', type: :system do
         fill_in 'Confirmation', with: ''
       end
 
-      example "'The form contains 3 errors.'と表示されること" do
+      it "'The form contains 3 errors.'と表示されること" do
         expect { click_button 'Create my account' }.to change(User, :count).by(0)
         expect(page).to have_selector('div.alert.alert-danger', text: 'The form contains 3 errors.')
       end
