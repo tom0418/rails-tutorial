@@ -1,60 +1,95 @@
 require 'rails_helper'
 
 RSpec.describe 'AuthenticationPages', type: :system do
-  describe 'Authentication' do
-    subject { page }
+  let!(:user) { create(:user) }
+  before { visit signin_path }
 
-    describe 'Signin page' do
-      before { visit signin_path }
-
-      it { is_expected.to have_content('Sign in') }
-      it { is_expected.to have_title('Sign in') }
-    end
-
-    describe 'Signin' do
-      before { visit signin_path }
-
-      context 'with invalid information' do
-        before { click_button 'Sign in' }
-
-        it { is_expected.to have_title('Sign in') }
-        it { is_expected.to have_selector('div.alert.alert-danger', text: 'Invalid') }
-
-        context 'after visiting another page' do
-          before { click_link 'Home' }
-          it { is_expected.not_to have_selector('div.alert.alert-danger') }
-        end
+  describe '/signin' do
+    context '初期表示' do
+      example "'Sign in'と表示されること" do
+        expect(page).to have_content('Sign in')
       end
 
-      context 'valid information' do
-        let!(:user) { create(:user) }
-        before do
-          fill_in 'Email', with: user.email.upcase
-          fill_in 'Password', with: user.password
-          click_button 'Sign in'
-        end
+      example "ページタイトルに'Sign in'と表示されること" do
+        expect(page).to have_title('Sign in')
+      end
 
-        it { is_expected.to have_title(user.name) }
-        it { is_expected.to have_link('Profile', href: user_path(user)) }
-        it { is_expected.to have_link('Sign out', href: signout_path) }
-        it { is_expected.not_to have_link('Sign in', href: signin_path) }
+      example '[Profile]リンクが表示されないこと' do
+        expect(page).to_not have_link('Profile', href: user_path(user))
+      end
+
+      example '[Sign out]リンクが表示されないこと' do
+        expect(page).to_not have_link('Sign out', href: signout_path)
       end
     end
 
-    describe 'Signout' do
-      before { visit signin_path }
-      let!(:user) { create(:user) }
+    context '無効な入力情報の時' do
+      before { click_button 'Sign in' }
+
+      example "'Invalid email/password combination'と表示されること" do
+        expect(page).to have_selector('div.alert.alert-danger',
+                                      text: 'Invalid email/password combination')
+      end
+
+      context '他のページに遷移した時' do
+        before { click_link 'Home' }
+
+        example "'Invalid email/password combination'と表示されないこと" do
+          expect(page).to_not have_selector('div.alert.alert-danger')
+        end
+      end
+    end
+
+    context '有効な入力情報の時' do
       before do
-        fill_in 'Email', with: user.email.upcase
-        fill_in 'Password', with: user.password
+        fill_in 'Email', with: 'test@example.com'
+        fill_in 'Password', with: 'password'
         click_button 'Sign in'
-        click_link 'Sign out'
       end
 
-      it { is_expected.to have_title(full_title('')) }
-      it { is_expected.to_not have_link('Profile', href: user_path(user)) }
-      it { is_expected.to_not have_link('Sign out', href: signout_path) }
-      it { is_expected.to have_link('Sign in', href: signin_path) }
+      example 'ページタイトルにユーザー名が表示されること' do
+        expect(page).to have_title(user.name)
+      end
+
+      example '[Profile]リンクが表示されること' do
+        expect(page).to have_link('Profile', href: user_path(user))
+      end
+
+      example '[Sign out]リンクが表示されること' do
+        expect(page).to have_link('Sign out', href: signout_path)
+      end
+
+      example '[Sign in]リンクが表示されないこと' do
+        expect(page).to_not have_link('Sign in', href: signin_path)
+      end
+    end
+
+    describe '/signout' do
+      before do
+        fill_in 'Email', with: 'test@example.com'
+        fill_in 'Password', with: 'password'
+        click_button 'Sign in'
+      end
+
+      context "[Sign out]リンクを押下した時" do
+        before { click_link 'Sign out' }
+
+        example 'ページタイトルがデフォルト表示になること' do
+          expect(page).to have_title(full_title(''))
+        end
+
+        example '[Profile]リンクが表示されないこと' do
+          expect(page).to_not have_link('Profile', href: user_path(user))
+        end
+
+        example '[Sign out]リンクが表示されないこと' do
+          expect(page).to_not have_link('Sign out', href: signout_path)
+        end
+
+        example '[Sign in]リンクが表示されること' do
+          expect(page).to have_link('Sign in', href: signin_path)
+        end
+      end
     end
   end
 end
