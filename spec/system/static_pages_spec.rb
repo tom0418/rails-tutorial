@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'StaticPages', type: :request do
+RSpec.describe 'StaticPages', type: :system do
   subject { page }
 
   describe 'Home Page' do
