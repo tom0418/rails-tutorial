@@ -1,106 +1,205 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  subject(:user) { FactoryBot.build(:user) }
+  let!(:user) { build(:user) }
 
-  it { is_expected.to respond_to(:name) }
-  it { is_expected.to respond_to(:email) }
-  it { is_expected.to respond_to(:password_digest) }
-  it { is_expected.to respond_to(:password) }
-  it { is_expected.to respond_to(:password_confirmation) }
-  it { is_expected.to respond_to(:authenticate) }
-
-  it { is_expected.to be_valid }
-
-  describe 'name' do
-    describe 'when name is not present' do
-      before { user.name = '' }
-      it { is_expected.to be_invalid }
+  describe '属性' do
+    it 'name' do
+      expect(user).to respond_to(:name)
     end
 
-    describe 'when name is too long' do
-      before { user.name = 'a' * 51 }
-      it { is_expected.to be_invalid }
+    it 'email' do
+      expect(user).to respond_to(:email)
+    end
+
+    it 'password_digest' do
+      expect(user).to respond_to(:password_digest)
+    end
+
+    it 'password' do
+      expect(user).to respond_to(:password)
+    end
+
+    it 'password_confirmation' do
+      expect(user).to respond_to(:password_confirmation)
+    end
+
+    it 'remember_digest' do
+      expect(user).to respond_to(:remember_digest)
+    end
+
+    it 'remember_token' do
+      expect(user).to respond_to(:remember_token)
     end
   end
 
-  describe 'email' do
-    describe 'when email is not present' do
-      before { user.email = '' }
-      it { is_expected.to be_invalid }
+  describe 'インスタンスメソッド' do
+    it "#authenticate" do
+      expect(user).to respond_to(:authenticate)
     end
 
-    describe 'when email is too long' do
-      before { user.email = 'a' * 244 + '@example.com' }
-      it { is_expected.to be_invalid }
+    it '#remember' do
+      expect(user).to respond_to(:remember)
     end
 
-    describe 'when email format is invalid' do
-      it 'should be invalid' do
-        addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar.com foo@bar+baz.com foo@bar..com]
-        addresses.each do |invalid_address|
-          user.email = invalid_address
+    it '#authenticated?' do
+      expect(user).to respond_to(:authenticated?)
+    end
+
+    it '#forget' do
+      expect(user).to respond_to(:forget)
+    end
+  end
+
+  describe 'バリデーション' do
+    describe 'name' do
+      context '空の時' do
+        before { user.name = '' }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context '空白文字の時' do
+        before { user.name = ' ' * 10 }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context 'nilの時' do
+        before { user.name = nil }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context '51バイト以上の時' do
+        before { user.name = 'a' * 51 }
+        it '無効であること' do
           expect(user).to be_invalid
         end
       end
     end
 
-    describe 'when email format is valid' do
-      it 'should be valid' do
-        addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
-        addresses.each do |valid_address|
-          user.email = valid_address
-          expect(user).to be_valid
+    describe 'email' do
+      context '空の時' do
+        before { user.email = '' }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context 'nilの時' do
+        before { user.email = nil }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context '256バイト以上の時' do
+        before { user.email = 'a' * 244 + '@example.com' }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context '無効なフォーマットの時' do
+        invalid_addresses = %w[
+                              user@foo,com user_at_foo.org
+                              it.user@foo.foo@bar.com
+                              foo@bar+baz.com foo@bar..com
+                            ]
+        it '無効であること' do
+          invalid_addresses.each do |invalid_address|
+            user.email = invalid_address
+            expect(user).to be_invalid
+          end
+        end
+      end
+
+      context '有効なフォーマットの時' do
+        valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
+        it '有効であること' do
+          valid_addresses.each do |valid_address|
+            user.email = valid_address
+            expect(user).to be_valid
+          end
+        end
+      end
+
+      context '既に存在する時' do
+        before do
+          user_with_same_email = user.dup
+          user_with_same_email.email = user.email.upcase
+          user_with_same_email.save
+        end
+        it '無効であること' do
+          expect(user).to be_invalid
         end
       end
     end
 
-    describe 'when email address is already taken' do
-      before do
-        user_with_same_email = user.dup
-        user_with_same_email.email = user.email.upcase
-        user_with_same_email.save
+    describe 'password_digest' do
+      context '空の時' do
+        before { user.password = user.password_confirmation = '' }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
       end
 
-      it { is_expected.to be_invalid }
+      context 'passwordとpassword_confirmationが一致しない時' do
+        before { user.password_confirmation = '' }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+    end
+
+    describe 'password' do
+      context '空文字の時' do
+        before { user.password = user.password_confirmation = ' ' * 6 }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
+
+      context '5文字以下の時' do
+        before { user.password = user.password_confirmation = 'a' * 5 }
+        it '無効であること' do
+          expect(user).to be_invalid
+        end
+      end
     end
   end
 
-  describe 'password_digest' do
-    describe 'when password is not present' do
-      before { user.password = user.password_confirmation = '' }
-      it { is_expected.to be_invalid }
-    end
-
-    describe "when password doesn't match confirmation" do
-      before { user.password_confirmation = '' }
-      it { is_expected.to be_invalid }
-    end
-
-    describe 'when password is blank' do
-      before { user.password = user.password_confirmation = ' ' * 6 }
-      it { is_expected.to be_invalid }
-    end
-
-    describe 'when password length too short' do
-      before { user.password = user.password_confirmation = 'a' * 5 }
-      it { is_expected.to be_invalid }
-    end
-  end
-
-  describe 'return value of authenticate method' do
+  describe '#authenticateの戻り値' do
     before { user.save }
     let(:found_user) { User.find_by(email: user.email) }
 
-    describe 'with valid password' do
-      it { is_expected.to eq found_user.authenticate(user.password) }
+    context '有効なパスワードの時' do
+      it '該当のユーザーが返されること' do
+        expect(user).to eq(found_user.authenticate(user.password))
+      end
     end
 
-    describe 'with invalid password' do
-      let(:user_for_invalid_password) { found_user.authenticate('invalid') }
+    context '無効なパスワードの時' do
+      it 'ユーザーが取得できないこと' do
+        expect(user).not_to eq(found_user.authenticate('invalid'))
+      end
 
-      it { is_expected.not_to eq user_for_invalid_password }
-      specify { expect(user_for_invalid_password).to be_falsey }
+      specify 'falseが返されること' do
+        expect(found_user.authenticate('invalid')).to be_falsey
+      end
+    end
+  end
+
+  describe '#authenticated?の戻り値' do
+    before { user.save }
+    context 'remember_digestがnilの時' do
+      specify "falseが返されること" do
+        expect(user.authenticated?(''))
+      end
     end
   end
 end
