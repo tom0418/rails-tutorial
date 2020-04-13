@@ -171,28 +171,35 @@ RSpec.describe User, type: :model do
         end
       end
     end
+  end
 
-    describe '#authenticateの戻り値' do
-      before { user.save }
-      let(:found_user) { User.find_by(email: user.email) }
+  describe '#authenticateの戻り値' do
+    before { user.save }
+    let(:found_user) { User.find_by(email: user.email) }
 
-      context '有効なパスワードの時' do
-        it '該当のユーザーが返されること' do
-          expect(user).to eq(found_user.authenticate(user.password))
-        end
+    context '有効なパスワードの時' do
+      it '該当のユーザーが返されること' do
+        expect(user).to eq(found_user.authenticate(user.password))
+      end
+    end
+
+    context '無効なパスワードの時' do
+      it 'ユーザーが取得できないこと' do
+        expect(user).not_to eq(found_user.authenticate('invalid'))
       end
 
-      context '無効なパスワードの時' do
-        it 'ユーザーが取得できないこと' do
-          expect(user).to_not eq(found_user.authenticate('invalid'))
-        end
-
-        specify 'falseが返されること' do
-          expect(found_user.authenticate('invalid')).to be_falsey
-        end
+      specify 'falseが返されること' do
+        expect(found_user.authenticate('invalid')).to be_falsey
       end
     end
   end
 
-  # TODO: remember_digestが存在しない時のテストを書く
+  describe '#authenticated?の戻り値' do
+    before { user.save }
+    context 'remember_digestがnilの時' do
+      specify "falseが返されること" do
+        expect(user.authenticated?(''))
+      end
+    end
+  end
 end

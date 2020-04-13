@@ -15,11 +15,11 @@ RSpec.describe 'AuthenticationPages', type: :system do
       end
 
       it '[Profile]リンクが表示されないこと' do
-        expect(page).to_not have_link('Profile', href: user_path(user))
+        expect(page).not_to have_link('Profile', href: user_path(user))
       end
 
       it '[Sign out]リンクが表示されないこと' do
-        expect(page).to_not have_link('Sign out', href: signout_path)
+        expect(page).not_to have_link('Sign out', href: signout_path)
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe 'AuthenticationPages', type: :system do
         before { click_link 'Home' }
 
         it "'Invalid email/password combination'と表示されないこと" do
-          expect(page).to_not have_selector('div.alert.alert-danger')
+          expect(page).not_to have_selector('div.alert.alert-danger')
         end
       end
     end
@@ -60,7 +60,7 @@ RSpec.describe 'AuthenticationPages', type: :system do
       end
 
       it '[Sign in]リンクが表示されないこと' do
-        expect(page).to_not have_link('Sign in', href: signin_path)
+        expect(page).not_to have_link('Sign in', href: signin_path)
       end
     end
 
@@ -79,11 +79,11 @@ RSpec.describe 'AuthenticationPages', type: :system do
         end
 
         it '[Profile]リンクが表示されないこと' do
-          expect(page).to_not have_link('Profile', href: user_path(user))
+          expect(page).not_to have_link('Profile', href: user_path(user))
         end
 
         it '[Sign out]リンクが表示されないこと' do
-          expect(page).to_not have_link('Sign out', href: signout_path)
+          expect(page).not_to have_link('Sign out', href: signout_path)
         end
 
         it '[Sign in]リンクが表示されること' do

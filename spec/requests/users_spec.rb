@@ -6,7 +6,7 @@ RSpec.describe 'Users', type: :request do
 
     context '有効な入力情報の時' do
       it 'サインアップできること' do
-        expect { valid_sign_up(users_path) }.to change(User, :count).by(1)
+        expect { sign_up(users_path) }.to change(User, :count).by(1)
         follow_redirect!
         expect(response).to render_template('users/show')
         expect(is_signed_in?).to be_truthy
@@ -15,7 +15,7 @@ RSpec.describe 'Users', type: :request do
 
     context '無効な入力情報の時' do
       it 'サインアップできないこと' do
-        expect { invalid_sign_up(users_path) }.to change(User, :count).by(0)
+        expect { sign_up(users_path, confirmation: 'invalid') }.to change(User, :count).by(0)
         expect(response).to render_template('users/new')
         expect(is_signed_in?).to be_falsey
       end

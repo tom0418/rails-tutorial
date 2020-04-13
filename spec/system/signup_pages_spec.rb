@@ -18,7 +18,7 @@ RSpec.describe 'Sign up', type: :system do
         expect(page).to have_content('Welcome to the Sample App!')
 
         within('.navbar-nav') do
-          expect(page).to_not have_content('Log in')
+          expect(page).not_to have_content('Log in')
           expect(page).to have_content('Account')
         end
       end

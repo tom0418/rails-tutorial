@@ -6,30 +6,28 @@ module Requests
   end
 
   module SessionsHelper
-    def valid_sign_in(path)
-      post path, params: { session: { email: 'test@example.com',
-                                      password: 'password' } }
+    def sign_in(path, email: 'test@example.com', password: 'password')
+      post path, params: { session: { email: email,
+                                      password: password } }
     end
 
-    def invalid_sign_in(path)
+    def sign_in_with_remember(path, remember_me: '1')
       post path, params: { session: { email: 'test@example.com',
-                                      password: 'invalid-password'} }
+                                      password: 'password',
+                                      remember_me: remember_me } }
     end
   end
 
   module UsersHelper
-    def valid_sign_up(path)
-      post path, params: { user: { name: 'Test User',
-                                         email: 'test@example.com',
-                                         password: 'password',
-                                         password_confirmation: 'password' } }
-    end
-
-    def invalid_sign_up(path)
-      post path, params: { user: { name: 'Test User',
-                                         email: 'test@example.com',
-                                         password: 'password',
-                                         password_confirmation: 'invalid' } }
+    def sign_up(path,
+                name: 'Test User',
+                email: 'test@example.com',
+                password: 'password',
+                confirmation: 'password')
+      post path, params: { user: { name: name,
+                                   email: email,
+                                   password: password,
+                                   password_confirmation: confirmation } }
     end
   end
 end
