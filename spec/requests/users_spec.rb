@@ -40,39 +40,28 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  describe '#index' do
+    let!(:user) { create(:user) }
+
+    context 'サインイン済みの時' do
+      before { sign_in(signin_path) }
+
+      it '200 OKを返すこと' do
+        get users_path
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
   describe '#edit' do
     let!(:user) { create(:user) }
 
-    describe '#logged_in_user' do
-      context 'サインイン済みの時' do
-        before { sign_in(signin_path) }
+    context 'サインイン済みの時' do
+      before { sign_in(signin_path) }
 
-        it '自身のEdit Pageに遷移できること' do
-          get edit_user_path(user)
-          expect(response.status).to eq(200)
-        end
-      end
-
-      context 'サインインしていない時' do
-        before { get edit_user_path(user) }
-
-        it '/signinにリダイレクトされること' do
-          expect(response).to redirect_to signin_url
-        end
-
-        context 'リダイレクト後にサインインした時' do
-          it '自身のEdit Pageに遷移できること' do
-            expect(sign_in(signin_path)).to redirect_to edit_user_path(user)
-          end
-
-          context '次回以降のサインインの時' do
-            it '自身のProfile Pageにリダイレクトされること' do
-              sign_in(signin_path)
-              delete signout_path
-              expect(sign_in(signin_path)).to redirect_to user
-            end
-          end
-        end
+      it '200 OKを返すこと' do
+        get edit_user_path(user)
+        expect(response.status).to eq(200)
       end
     end
   end
@@ -80,42 +69,94 @@ RSpec.describe 'Users', type: :request do
   describe '#update' do
     let!(:user) { create(:user) }
 
-    describe '#logged_in_user' do
-      context 'サインイン済みの時' do
-        before { sign_in(signin_path) }
+    context 'サインイン済みの時' do
+      before { sign_in(signin_path) }
 
-        context '有効な入力情報の時' do
-          let(:name) { 'Edit User' }
-          let(:email) { 'edit_test@example.com' }
+      context '有効な入力情報の時' do
+        let(:name) { 'Edit User' }
+        let(:email) { 'edit_test@example.com' }
 
-          context '全て入力した時' do
-            it 'ユーザー情報が更新されること' do
-              update_user(user_path(user), name: name, email: email)
-              user.reload
-              expect(user.name).to eq(name)
-              expect(user.email).to eq(email)
-            end
-          end
-
-          context 'password, password_confirmaitonを空にした時' do
-            it 'ユーザー情報が更新されること' do
-              update_user(user_path(user), name: name, email: email, password: '', confirmation: '')
-              user.reload
-              expect(user.name).to eq(name)
-              expect(user.email).to eq(email)
-            end
+        context '全て入力した時' do
+          it 'ユーザー情報が更新されること' do
+            update_user(user_path(user), name: name, email: email)
+            user.reload
+            expect(user.name).to eq(name)
+            expect(user.email).to eq(email)
           end
         end
 
-        context '無効な入力情報の時' do
-          it '/users/edit/:idが再描画されること' do
-            update_user(user_path(user), confirmation: 'invalid')
-            expect(response).to render_template('users/edit')
+        context 'password, password_confirmaitonを空にした時' do
+          it 'ユーザー情報が更新されること' do
+            update_user(user_path(user), name: name, email: email, password: '', confirmation: '')
+            user.reload
+            expect(user.name).to eq(name)
+            expect(user.email).to eq(email)
           end
         end
       end
 
-      context 'サインインしていない時' do
+      context '無効な入力情報の時' do
+        it '/users/edit/:idが再描画されること' do
+          update_user(user_path(user), confirmation: 'invalid')
+          expect(response).to render_template('users/edit')
+        end
+      end
+    end
+  end
+
+  describe '#logged_in_user' do
+    let!(:user) { create(:user) }
+
+    describe '未サインイン' do
+      context '#index' do
+        before { get users_path }
+
+        it '/signinにリダイレクトされること' do
+          expect(response).to redirect_to signin_url
+        end
+
+        context 'リダイレクト後にサインインした時' do
+          it 'Users Pageにリダイレクトされること' do
+            sign_in(signin_path)
+            expect(response).to redirect_to users_path
+          end
+        end
+
+        context '次回以降のサインインの時' do
+          it 'Profile Pageにリダイレクトされること' do
+            sign_in(signin_path)
+            delete signout_path
+            sign_in(signin_path)
+            expect(response).to redirect_to user
+          end
+        end
+      end
+
+      context '#edit' do
+        before { get edit_user_path(user) }
+
+        it '/signinにリダイレクトされること' do
+          expect(response).to redirect_to signin_url
+        end
+
+        context 'リダイレクト後にサインインした時' do
+          it '自身の自身のEdit Pageにリダイレクトされること' do
+            sign_in(signin_path)
+            expect(response).to redirect_to edit_user_path(user)
+          end
+        end
+
+        context '次回以降のサインインの時' do
+          it 'Profile Pageにリダイレクトされること' do
+            sign_in(signin_path)
+            delete signout_path
+            sign_in(signin_path)
+            expect(response).to redirect_to user
+          end
+        end
+      end
+
+      context '#update' do
         it '/signinにリダイレクトされること' do
           response_without_sign_in = update_user(user_path(user))
           expect(response_without_sign_in).to redirect_to signin_url
