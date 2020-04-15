@@ -42,6 +42,7 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'debase'
   gem 'ruby-debug-ide'
+  gem 'faker'
 end
 
 group :test do
