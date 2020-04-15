@@ -18,6 +18,9 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder'
 
+gem 'will_paginate'
+gem 'bootstrap-will_paginate'
+
 gem 'bootsnap', require: false
 
 group :development, :test do
