@@ -41,14 +41,21 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe '#index' do
-    let!(:user) { create(:user) }
+    let!(:list_user) { create_list(:list_user, 31) }
 
     context 'サインイン済みの時' do
-      before { sign_in(signin_path) }
+      before { sign_in(signin_path, email: 'test1@example.com') }
 
-      it '200 OKを返すこと' do
+      it 'Usersページに30番目のユーザーが取得でき、31番目のユーザーが取得できないこと' do
         get users_path
+        # 200 OKを返すこと
         expect(response.status).to eq(200)
+
+        # 30番目のユーザーが取得できること
+        expect(response.body).to include('Test User30')
+
+        # 31番目のユーザーが取得できないこと
+        expect(response.body).not_to include('Test User31')
       end
     end
   end
