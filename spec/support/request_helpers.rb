@@ -29,6 +29,17 @@ module Requests
                                    password: password,
                                    password_confirmation: confirmation } }
     end
+
+    def update_user(path,
+                    name: 'Edit User',
+                    email: 'edit_test@example.com',
+                    password: 'edit_password',
+                    confirmation: 'edit_password')
+      patch path, params: { user: { name: name,
+                                    email: email,
+                                    password: password,
+                                    password_confirmation: confirmation } }
+    end
   end
 end
 
