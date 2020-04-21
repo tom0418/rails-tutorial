@@ -14,6 +14,10 @@ RSpec.describe 'AuthenticationPages', type: :system do
         expect(page).to have_title('Sign in')
       end
 
+      it '[Users]リンクが表示されないこと' do
+        expect(page).not_to have_link('Users', href: users_path)
+      end
+
       it '[Profile]リンクが表示されないこと' do
         expect(page).not_to have_link('Profile', href: user_path(user))
       end
@@ -51,6 +55,10 @@ RSpec.describe 'AuthenticationPages', type: :system do
         expect(page).to have_title(user.name)
       end
 
+      it '[Users]リンクが表示されること' do
+        expect(page).to have_link('Users', href: users_path)
+      end
+
       it '[Profile]リンクが表示されること' do
         expect(page).to have_link('Profile', href: user_path(user))
       end
@@ -71,7 +79,7 @@ RSpec.describe 'AuthenticationPages', type: :system do
         click_button 'Sign in'
       end
 
-      context "[Sign out]リンクを押下した時" do
+      context '[Sign out]リンクを押下した時' do
         before { click_link 'Sign out' }
 
         it 'ページタイトルがデフォルト表示になること' do
