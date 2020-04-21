@@ -8,7 +8,11 @@ RSpec.describe 'Sessions' , type: :request do
     context '有効な入力情報の時' do
       it 'サインインできること' do
         sign_in(signin_path, password: 'password')
+
+        # Profile Pageにリダイレクトされること
         expect(response).to redirect_to user
+
+        # サインインできること
         expect(is_signed_in?).to be_truthy
       end
     end
@@ -16,7 +20,11 @@ RSpec.describe 'Sessions' , type: :request do
     context '無効な入力情報の時' do
       it 'サインインできないこと' do
         sign_in(signin_path, password: 'invalid_password')
+
+        # sessions/newが再描画されること
         expect(response).to render_template('sessions/new')
+
+        # サインインできないこと
         expect(is_signed_in?).to be_falsey
       end
     end
@@ -42,11 +50,19 @@ RSpec.describe 'Sessions' , type: :request do
     context '有効な情報でログインしてからサインアウトする時' do
       it 'サインアウトできること' do
         sign_in(signin_path, password: 'password')
-        expect(is_signed_in?).to be_truthy
+
+        # Profile Pageにリダイレクトされること
         expect(response).to redirect_to user
+
+        # サインインできること
+        expect(is_signed_in?).to be_truthy
         delete signout_path
-        expect(is_signed_in?).to be_falsey
+
+        # Home Pageにリダイレクトされること
         expect(response).to redirect_to root_url
+
+        # サインインしていないこと
+        expect(is_signed_in?).to be_falsey
       end
     end
 
@@ -56,8 +72,12 @@ RSpec.describe 'Sessions' , type: :request do
         delete signout_path
         follow_redirect!
         delete signout_path
-        expect(is_signed_in?).to be_falsey
+
+        # Home Pageにリダイレクトされること
         expect(response).to redirect_to root_url
+
+        # サインインしていないこと
+        expect(is_signed_in?).to be_falsey
       end
     end
   end

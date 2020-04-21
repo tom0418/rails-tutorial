@@ -18,6 +18,9 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder'
 
+gem 'will_paginate'
+gem 'bootstrap-will_paginate'
+
 gem 'bootsnap', require: false
 
 group :development, :test do
@@ -42,6 +45,7 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'debase'
   gem 'ruby-debug-ide'
+  gem 'faker'
 end
 
 group :test do
