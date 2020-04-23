@@ -34,7 +34,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'インスタンスメソッド' do
-    it "#authenticate" do
+    it '#authenticate' do
       expect(user).to respond_to(:authenticate)
     end
 
@@ -106,10 +106,12 @@ RSpec.describe User, type: :model do
 
       context '無効なフォーマットの時' do
         invalid_addresses = %w[
-                              user@foo,com user_at_foo.org
-                              it.user@foo.foo@bar.com
-                              foo@bar+baz.com foo@bar..com
-                            ]
+          user@foo,com
+          user_at_foo.org
+          it.user@foo.foo@bar.com
+          foo@bar+baz.com
+          foo@bar..com
+        ]
         it '無効であること' do
           invalid_addresses.each do |invalid_address|
             user.email = invalid_address
@@ -197,7 +199,7 @@ RSpec.describe User, type: :model do
   describe '#authenticated?の戻り値' do
     before { user.save }
     context 'remember_digestがnilの時' do
-      specify "falseが返されること" do
+      specify 'falseが返されること' do
         expect(user.authenticated?(''))
       end
     end

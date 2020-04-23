@@ -26,11 +26,10 @@ class UsersController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
-    if @user.update_attributes(user_params)
+    if @user.update(user_params)
       flash[:success] = 'Profile updated'
       redirect_to @user
     else
@@ -52,11 +51,11 @@ class UsersController < ApplicationController
 
   # サインイン済みのユーザーかどうか確認
   def logged_in_user
-    unless logged_in?
-      store_location
-      flash[:danger] = 'Please Sign in.'
-      redirect_to signin_url
-    end
+    return if logged_in?
+
+    store_location
+    flash[:danger] = 'Please Sign in.'
+    redirect_to signin_url
   end
 
   # 正しいユーザーかどうか確認

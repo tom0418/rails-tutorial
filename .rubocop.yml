@@ -1,5 +1,6 @@
 # 将来的には対応する規約の読込
-inherit_from: .rubocop_todo.yml
+inherit_from:
+  - .rubocop_todo.yml
 
 # 追加した規約ファイルの読込
 require:
@@ -10,6 +11,7 @@ AllCops:
   TargetRubyVersion: 2.6.5
   # 除外
   Exclude:
+    - 'vendor/**/*' # rubocop config/default.yml
     - 'config.ru'
     - 'bin/**'
     - 'lib/**'
@@ -17,26 +19,57 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
 
+#################### Layout ###########################
+
+# 1行最大120文字
+Layout/LineLength:
+  Max: 120
+
 #################### Naming ##############################
 
 # メソッド名のprefixに「set_」「get_」を許可
-AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
 
 #################### Style ###############################
 
 # 「and」「or」の使用を許可
-AndOr:
+Style/AndOr:
   Enabled: false
 
 # 日本語でのコメントを許可
-AsciiComments:
+Style/AsciiComments:
   Enabled: false
 
 # モジュール名::クラス名の定義を許可
-ClassAndModuleChildren:
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# メソッド呼び出しで :: の使用を許可
+Style/ColonMethodCall:
   Enabled: false
 
 # クラスのコメント必須を無視
-Documentation:
+Style/Documentation:
   Enabled: false
+
+# if 文の中に 3 行程度のブロックを書くのは許容する
+Style/GuardClause:
+  MinBodyLength: 3
+
+#################### Metrics ###############################
+
+# 一旦 30 までとする
+Metrics/AbcSize:
+  Max: 30
+
+# rake, RSpec, environments, routes は巨大な block 不可避なので除外
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'Gemfile'
+    - 'config/environments/*.rb'
+    - 'config/routes.rb'
+    - '*.gemspec'
