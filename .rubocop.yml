@@ -45,6 +45,10 @@ Style/AsciiComments:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+# メソッド呼び出しで :: の使用を許可
+Style/ColonMethodCall:
+  Enabled: false
+
 # クラスのコメント必須を無視
 Style/Documentation:
   Enabled: false
@@ -52,10 +56,6 @@ Style/Documentation:
 # if 文の中に 3 行程度のブロックを書くのは許容する
 Style/GuardClause:
   MinBodyLength: 3
-
-# メソッド呼び出しで :: の使用を許可
-Style/ColonMethodCall:
-  Enabled: false
 
 #################### Metrics ###############################
 
