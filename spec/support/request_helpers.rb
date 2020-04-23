@@ -6,39 +6,39 @@ module Requests
   end
 
   module SessionsHelper
-    def sign_in(path, email: 'test@example.com', password: 'password')
-      post path, params: { session: { email: email,
-                                      password: password } }
+    def sign_in(url, email: 'test@example.com', password: 'password')
+      post url, params: { session: { email: email,
+                                     password: password } }
     end
 
-    def sign_in_with_remember(path, remember_me: '1')
-      post path, params: { session: { email: 'test@example.com',
-                                      password: 'password',
-                                      remember_me: remember_me } }
+    def sign_in_with_remember(url, remember_me: '1')
+      post url, params: { session: { email: 'test@example.com',
+                                     password: 'password',
+                                     remember_me: remember_me } }
     end
   end
 
   module UsersHelper
-    def sign_up(path,
+    def sign_up(url,
                 name: 'Test User',
                 email: 'test@example.com',
                 password: 'password',
                 confirmation: 'password')
-      post path, params: { user: { name: name,
-                                   email: email,
-                                   password: password,
-                                   password_confirmation: confirmation } }
+      post url, params: { user: { name: name,
+                                  email: email,
+                                  password: password,
+                                  password_confirmation: confirmation } }
     end
 
-    def update_user(path,
+    def update_user(url,
                     name: 'Edit User',
                     email: 'edit_test@example.com',
                     password: 'edit_password',
                     confirmation: 'edit_password')
-      patch path, params: { user: { name: name,
-                                    email: email,
-                                    password: password,
-                                    password_confirmation: confirmation } }
+      patch url, params: { user: { name: name,
+                                   email: email,
+                                   password: password,
+                                   password_confirmation: confirmation } }
     end
   end
 end
