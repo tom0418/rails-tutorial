@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Sessions' , type: :request do
+RSpec.describe 'Sessions', type: :request do
   let!(:user) { create(:user) }
   before { get signin_path }
 
@@ -67,7 +67,7 @@ RSpec.describe 'Sessions' , type: :request do
     end
 
     context 'ログアウト済みのユーザーの時' do
-      it "Home Pageにリダイレクトされること" do
+      it 'Home Pageにリダイレクトされること' do
         sign_in(signin_path, password: 'password')
         delete signout_path
         follow_redirect!
