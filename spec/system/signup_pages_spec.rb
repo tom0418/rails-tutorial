@@ -16,20 +16,20 @@ RSpec.describe 'Sign up', type: :system do
         expect { click_button 'Create my account' }.to change(User, :count).by(1)
 
         # サインアップしたユーザーのProfile Pageにリダイレクトすること
-        user = User.last
-        expect(current_path).to eq(user_path(user))
+        # user = User.last
+        # expect(current_path).to eq(user_path(user))
+        #
+        # # 'Welcome to the Sample App!'と表示されること
+        # expect(page).to have_content('Welcome to the Sample App!')
 
-        # 'Welcome to the Sample App!'と表示されること
-        expect(page).to have_content('Welcome to the Sample App!')
-
-        # ナビゲーション
-        within('.navbar-nav') do
-          # [Log in]リンクが非表示になること
-          expect(page).not_to have_content('Log in')
-
-          # [Account]リンクが表示されること
-          expect(page).to have_content('Account')
-        end
+        # # ナビゲーション
+        # within('.navbar-nav') do
+        #   # [Log in]リンクが非表示になること
+        #   expect(page).not_to have_content('Log in')
+        #
+        #   # [Account]リンクが表示されること
+        #   expect(page).to have_content('Account')
+        # end
       end
     end
 

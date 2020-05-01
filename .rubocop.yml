@@ -73,3 +73,9 @@ Metrics/BlockLength:
     - 'config/environments/*.rb'
     - 'config/routes.rb'
     - '*.gemspec'
+
+# 20 行を超えるのは migration ファイル以外滅多にない
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'db/migrate/*.rb'
