@@ -1,6 +1,68 @@
 require 'rails_helper'
 
 RSpec.describe 'User pages', type: :system do
+  describe 'Users Page' do
+    let!(:user) { create(:user, admin: 1) }
+    let!(:another) { create(:user, email: 'another@example.com', admin: 0) }
+    before { visit signin_path }
+
+    context 'サインイン済みの時' do
+      context 'admin権限のユーザーでサインイン済みの時' do
+        before do
+          fill_in 'Email', with: 'test@example.com'
+          fill_in 'Password', with: 'password'
+          click_button 'Sign in'
+          visit users_path
+        end
+
+        it "'All users'と表示されること" do
+          expect(page).to have_content('All users')
+        end
+
+        it "ページタイトルに'All users'と表示されること" do
+          expect(page).to have_title('All users')
+        end
+
+        it '[delete]リンクが表示されること' do
+          expect(page).to have_link('delete')
+        end
+      end
+
+      context '一般ユーザーでサインイン済みの時' do
+        before do
+          fill_in 'Email', with: 'another@example.com'
+          fill_in 'Password', with: 'password'
+          click_button 'Sign in'
+          visit users_path
+        end
+
+        it '[delete]リンクが表示されないこと' do
+          expect(page).not_to have_link('delete')
+        end
+      end
+    end
+
+    context '有効化されていないユーザーが存在する時' do
+      deactivated_params = { name: 'Deactivated', email: 'deactivated@example.com', activated: 0, activated_at: nil }
+      let!(:deactivated_user) { create(:user, deactivated_params) }
+
+      before do
+        fill_in 'Email', with: 'test@example.com'
+        fill_in 'Password', with: 'password'
+        click_button 'Sign in'
+        visit users_path
+      end
+
+      it '有効化されていないユーザーが表示されないこと' do
+        expect(page).not_to have_content('Deactivated')
+      end
+
+      it '有効化されているユーザーが表示されていること' do
+        expect(page).to have_content('Test User')
+      end
+    end
+  end
+
   describe 'Profile page' do
     context 'Profile Pageにアクセスした時' do
       let!(:user) { create(:user) }
@@ -75,48 +137,6 @@ RSpec.describe 'User pages', type: :system do
 
         it "'The form contains 4 errors.'と表示されること" do
           expect(page).to have_selector('div.alert.alert-danger', text: 'The form contains 4 errors.')
-        end
-      end
-    end
-  end
-
-  describe 'Users Page' do
-    let!(:user) { create(:user, admin: 1) }
-    let!(:another) { create(:user, email: 'another@example.com', admin: 0) }
-    before { visit signin_path }
-
-    context 'サインイン済みの時' do
-      context 'admin権限のユーザーでサインイン済みの時' do
-        before do
-          fill_in 'Email', with: 'test@example.com'
-          fill_in 'Password', with: 'password'
-          click_button 'Sign in'
-          visit users_path
-        end
-
-        it "'All users'と表示されること" do
-          expect(page).to have_content('All users')
-        end
-
-        it "ページタイトルに'All users'と表示されること" do
-          expect(page).to have_title('All users')
-        end
-
-        it '[delete]リンクが表示されること' do
-          expect(page).to have_link('delete')
-        end
-      end
-
-      context '一般ユーザーでサインイン済みの時' do
-        before do
-          fill_in 'Email', with: 'another@example.com'
-          fill_in 'Password', with: 'password'
-          click_button 'Sign in'
-          visit users_path
-        end
-
-        it '[delete]リンクが表示されないこと' do
-          expect(page).not_to have_link('delete')
         end
       end
     end
