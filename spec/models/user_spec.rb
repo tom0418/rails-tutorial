@@ -31,6 +31,10 @@ RSpec.describe User, type: :model do
     it 'remember_token' do
       expect(user).to respond_to(:remember_token)
     end
+
+    it 'activation_token' do
+      expect(user).to respond_to(:activation_token)
+    end
   end
 
   describe 'インスタンスメソッド' do
@@ -200,7 +204,7 @@ RSpec.describe User, type: :model do
     before { user.save }
     context 'remember_digestがnilの時' do
       specify 'falseが返されること' do
-        expect(user.authenticated?(''))
+        expect(user.authenticated?(:remember, ''))
       end
     end
   end

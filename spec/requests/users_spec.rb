@@ -2,48 +2,78 @@ require 'rails_helper'
 
 RSpec.describe 'Users', type: :request do
   describe '#create' do
-    before { get signup_url }
+    describe '有効な入力情報' do
+      describe '共通処理' do
+        ActionMailer::Base.deliveries.clear
 
-    context '有効な入力情報の時' do
-      it 'サインアップできること' do
-        expect { sign_up(users_url) }.to change(User, :count).by(1)
-        follow_redirect!
-        expect(response).to render_template('users/show')
-        expect(is_signed_in?).to be_truthy
+        it 'Usersテーブルにレコードが1件追加されること' do
+          # Usersテーブルにレコードが1件追加されること
+          expect { sign_up(users_url) }.to change(User, :count).by(1)
+
+          # アカウント有効化メールが1件送信されること
+          expect(ActionMailer::Base.deliveries.size).to eq(1)
+
+          # Home Pageにリダイレクトされること
+          expect(response).to redirect_to root_url
+
+          # 未サインインであること
+          expect(is_signed_in?).to be_falsey
+        end
+
+        describe 'アカウント有効化' do
+          before { sign_up(users_url) }
+          let!(:user) { assigns(:user) }
+
+          context '有効化トークンが不正な場合' do
+            it 'サインインできないこと' do
+              get edit_account_activation_url('invalid token', email: user.email)
+              expect(is_signed_in?).to be_falsey
+            end
+          end
+
+          context '有効化トークンは正しいがメールアドレスが無効な場合' do
+            it 'サインインできないこと' do
+              get edit_account_activation_url(user.activation_token, email: 'wrong')
+              expect(is_signed_in?).to be_falsey
+            end
+          end
+
+          context '有効化トークン、メールアドレスともに正しい場合' do
+            it 'サインインできること' do
+              get edit_account_activation_url(user.activation_token, email: user.email)
+
+              # ユーザーが有効化されること
+              expect(user.reload.activated?).to be_truthy
+
+              # サインインできること
+              expect(is_signed_in?).to be_truthy
+
+              # Profile Pageにリダイレクトされること
+              expect(response).to redirect_to user
+            end
+          end
+        end
       end
     end
 
-    context '無効な入力情報の時' do
-      it 'サインアップできないこと' do
+    describe '無効な入力情報' do
+      it 'Usersテーブルにレコードが追加されないこと' do
+        # Usersテーブルにレコードが追加されないこと
         expect { sign_up(users_url, confirmation: 'invalid') }.to change(User, :count).by(0)
+
+        # Signup Pageが再描画されること
         expect(response).to render_template('users/new')
+
+        # サインアップできないこと
         expect(is_signed_in?).to be_falsey
       end
     end
   end
 
-  describe '#show' do
-    context 'ユーザーが存在する時' do
-      let!(:user) { create(:user) }
-
-      it '200 OKを返すこと' do
-        get user_url(user)
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'ユーザーが存在しない時' do
-      it 'ActiveRecord::RecordNotFoundを返すこと' do
-        expect { get user_url(0) }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
-
   describe '#index' do
-    let!(:list_user) { create_list(:list_user, 31) }
-
     describe '#logged_in_user' do
       context 'サインイン済みの時' do
+        let!(:list_user) { create_list(:list_user, 31) }
         before { sign_in(signin_url, email: 'test1@example.com') }
 
         it 'Usersページに30番目のユーザーが取得でき、31番目のユーザーが取得できないこと' do
@@ -56,6 +86,25 @@ RSpec.describe 'Users', type: :request do
 
           # 31番目のユーザーが取得できないこと
           expect(response.body).not_to include('Test User31')
+        end
+      end
+
+      context '有効化されていないユーザーが存在する時' do
+        let!(:user) { create(:user) }
+        deactivated_params = { name: 'Deactivated', email: 'deactivated@example.com', activated: 0, activated_at: nil }
+        let!(:deactivated_user) { create(:user, deactivated_params) }
+        before { sign_in(signin_url) }
+
+        it '有効化されていないユーザーが取得できないこと' do
+          get users_url
+          # 200 OKを返すこと
+          expect(response.status).to eq(200)
+
+          # 有効化されていないユーザーが取得できないこと
+          expect(response.body).not_to include('Deactivated')
+
+          # 有効化されているユーザーが取得できること
+          expect(response.body).to include('Test User')
         end
       end
 
@@ -82,6 +131,43 @@ RSpec.describe 'Users', type: :request do
             expect(response).to redirect_to user
           end
         end
+      end
+    end
+  end
+
+  describe '#show' do
+    context 'ユーザーが存在する時' do
+      context 'ユーザーが有効化されている時' do
+        let!(:user) { create(:user) }
+        before { get user_url(user) }
+
+        it '200 OKを返すこと' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'Profile Pageにリダイレクトすること' do
+          expect(response).to render_template('users/show')
+        end
+      end
+
+      context 'ユーザーが有効化されていない時' do
+        deactivated_params = { activated: 0, activated_at: nil }
+        let!(:deactivated_user) { create(:user, deactivated_params) }
+        before { get user_url(deactivated_user) }
+
+        it '200 OKを返すこと' do
+          get user_url(deactivated_user)
+        end
+
+        it 'Home Pageにリダイレクトされること' do
+          expect(response).to redirect_to root_url
+        end
+      end
+    end
+
+    context 'ユーザーが存在しない時' do
+      it 'ActiveRecord::RecordNotFoundを返すこと' do
+        expect { get user_url(0) }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

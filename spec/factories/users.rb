@@ -6,11 +6,15 @@ FactoryBot.define do
     name { 'Test User' }
     email { 'test@example.com' }
     password { 'password' }
+    activated { 1 }
+    activated_at { Time.zone.now }
   end
 
   factory :list_user, class: User do
     name
     email
     password { 'password' }
+    activated { 1 }
+    activated_at { Time.zone.now }
   end
 end
