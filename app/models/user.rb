@@ -35,7 +35,7 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 
-  # 渡されたトークンがダイジェストと一致したらtrueを返す
+  # 渡されたトークンがダイジェストと一致したら true を返す
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
     return false if digest.nil?
@@ -67,6 +67,11 @@ class User < ApplicationRecord
   # パスワード再設定のメールを送信する
   def send_password_reset_email
     UserMailer.password_reset(self).deliver_now
+  end
+
+  # パスワード再設定の期限が切れている場合は true を返す
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 
   private
