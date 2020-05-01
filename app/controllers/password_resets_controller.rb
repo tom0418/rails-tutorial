@@ -1,4 +1,7 @@
 class PasswordResetsController < ApplicationController
+  before_action :get_user, only: [:edit, :update]
+  before_action :valid_user, only: [:edit, :update]
+
   def new; end
 
   def create
@@ -15,4 +18,20 @@ class PasswordResetsController < ApplicationController
   end
 
   def edit; end
+
+  def update; end
+
+  private
+
+  def get_user
+    @user = User.find_by(email: params[:email])
+  end
+
+  # 正しいユーザーかどうか確認する
+  def valid_user
+    valid_user_conditions = @user && @user.activated? && @user.authenticated?(:reset, params[:id])
+    unless valid_user_conditions
+      redirect_to root_url
+    end
+  end
 end
