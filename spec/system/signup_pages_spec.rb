@@ -15,21 +15,11 @@ RSpec.describe 'Sign up', type: :system do
         # Userテーブルにレコードが1件追加されること
         expect { click_button 'Create my account' }.to change(User, :count).by(1)
 
-        # サインアップしたユーザーのProfile Pageにリダイレクトすること
-        # user = User.last
-        # expect(current_path).to eq(user_path(user))
-        #
-        # # 'Welcome to the Sample App!'と表示されること
-        # expect(page).to have_content('Welcome to the Sample App!')
+        # Home Pageにリダイレクトされること
+        expect(current_path).to eq(root_path)
 
-        # # ナビゲーション
-        # within('.navbar-nav') do
-        #   # [Log in]リンクが非表示になること
-        #   expect(page).not_to have_content('Log in')
-        #
-        #   # [Account]リンクが表示されること
-        #   expect(page).to have_content('Account')
-        # end
+        # 'Please check your email to activate your account.'と表示されること
+        expect(page).to have_content('Please check your email to activate your account.')
       end
     end
 
