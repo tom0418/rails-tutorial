@@ -42,7 +42,7 @@ RSpec.describe 'Users', type: :request do
             it 'サインインできること' do
               get edit_account_activation_url(user.activation_token, email: user.email)
 
-              # ユーザーが有効化されること
+              # アカウントが有効化されること
               expect(user.reload.activated?).to be_truthy
 
               # サインインできること
@@ -89,21 +89,21 @@ RSpec.describe 'Users', type: :request do
         end
       end
 
-      context '有効化されていないユーザーが存在する時' do
+      context 'アカウントが有効化されていないユーザーが存在する時' do
         let!(:user) { create(:user) }
         deactivated_params = { name: 'Deactivated', email: 'deactivated@example.com', activated: 0, activated_at: nil }
         let!(:deactivated_user) { create(:user, deactivated_params) }
         before { sign_in(signin_url) }
 
-        it '有効化されていないユーザーが取得できないこと' do
+        it 'アカウントが有効化されていないユーザーが取得できないこと' do
           get users_url
           # 200 OKを返すこと
           expect(response.status).to eq(200)
 
-          # 有効化されていないユーザーが取得できないこと
+          # アカウントが有効化されていないユーザーが取得できないこと
           expect(response.body).not_to include('Deactivated')
 
-          # 有効化されているユーザーが取得できること
+          # アカウントが有効化されているユーザーが取得できること
           expect(response.body).to include('Test User')
         end
       end
@@ -137,7 +137,7 @@ RSpec.describe 'Users', type: :request do
 
   describe '#show' do
     context 'ユーザーが存在する時' do
-      context 'ユーザーが有効化されている時' do
+      context 'アカウントが有効化されている時' do
         let!(:user) { create(:user) }
         before { get user_url(user) }
 
@@ -150,7 +150,7 @@ RSpec.describe 'Users', type: :request do
         end
       end
 
-      context 'ユーザーが有効化されていない時' do
+      context 'アカウントが有効化されていない時' do
         deactivated_params = { activated: 0, activated_at: nil }
         let!(:deactivated_user) { create(:user, deactivated_params) }
         before { get user_url(deactivated_user) }
