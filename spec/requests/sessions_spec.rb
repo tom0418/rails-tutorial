@@ -2,18 +2,33 @@ require 'rails_helper'
 
 RSpec.describe 'Sessions', type: :request do
   let!(:user) { create(:user) }
-  before { get signin_url }
 
   describe '#create' do
     context '有効な入力情報の時' do
-      it 'サインインできること' do
-        sign_in(signin_url, password: 'password')
+      context 'アカウントが有効化されている時' do
+        it 'サインインできること' do
+          sign_in(signin_url, password: 'password')
 
-        # Profile Pageにリダイレクトされること
-        expect(response).to redirect_to user
+          # Profile Pageにリダイレクトされること
+          expect(response).to redirect_to user
 
-        # サインインできること
-        expect(is_signed_in?).to be_truthy
+          # サインインできること
+          expect(is_signed_in?).to be_truthy
+        end
+      end
+
+      context 'アカウントが有効化されていない時' do
+        deactivated_params = { email: 'deactivated@example.com', activated: 0, activated_at: nil }
+        let!(:deactivated_user) { create(:user, deactivated_params) }
+        it 'サインインできないこと' do
+          sign_in(signin_url, email: 'deactivated@example.com')
+
+          # Home Pageにリダイレクトされること
+          expect(response).to redirect_to root_url
+
+          # サインインできないこと
+          expect(is_signed_in?).to be_falsey
+        end
       end
     end
 
