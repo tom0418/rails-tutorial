@@ -41,4 +41,19 @@ module Requests
                                    password_confirmation: confirmation } }
     end
   end
+
+  module PasswordResetsHelper
+    def reset_password(url, email: 'test@example.com')
+      post url, params: { password_reset: { email: email } }
+    end
+
+    def update_password(url,
+                        email: 'test@example.com',
+                        password: 'edit_password',
+                        confirmation: 'edit_password')
+      patch url, params: { email: email,
+                           user: { password: password,
+                                   password_confirmation: confirmation } }
+    end
+  end
 end
