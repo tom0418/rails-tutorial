@@ -35,6 +35,10 @@ RSpec.describe User, type: :model do
     it 'activation_token' do
       expect(user).to respond_to(:activation_token)
     end
+
+    it 'reset_token' do
+      expect(user).to respond_to(:reset_token)
+    end
   end
 
   describe 'インスタンスメソッド' do
@@ -52,6 +56,26 @@ RSpec.describe User, type: :model do
 
     it '#forget' do
       expect(user).to respond_to(:forget)
+    end
+
+    it '#activate' do
+      expect(user).to respond_to(:activate)
+    end
+
+    it '#send_activation_email' do
+      expect(user).to respond_to(:send_activation_email)
+    end
+
+    it '#create_reset_digest' do
+      expect(user).to respond_to(:create_reset_digest)
+    end
+
+    it '#send_password_reset_email' do
+      expect(user).to respond_to(:send_password_reset_email)
+    end
+
+    it '#password_reset_expired?' do
+      expect(user).to respond_to(:password_reset_expired?)
     end
   end
 
