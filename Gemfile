@@ -6,46 +6,44 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rails', '~> 5.2.4.2'
+
 gem 'bcrypt'
+gem 'bootsnap', require: false
+gem 'bootstrap-sass'
+gem 'bootstrap-will_paginate'
+gem 'coffee-rails'
+gem 'jbuilder'
+gem 'jquery-rails'
 gem 'mysql2'
 gem 'puma'
 gem 'sass-rails'
-gem 'bootstrap-sass'
-gem 'uglifier'
-
-gem 'coffee-rails'
-gem 'jquery-rails'
 gem 'turbolinks'
-gem 'jbuilder'
-
+gem 'uglifier'
 gem 'will_paginate'
-gem 'bootstrap-will_paginate'
-
-gem 'bootsnap', require: false
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'capybara'
+  gem 'factory_bot_rails'
   gem 'pry'
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'capybara'
-  gem 'selenium-webdriver'
   gem 'rspec-rails'
-  gem 'factory_bot_rails'
+  gem 'selenium-webdriver'
 end
 
 group :development do
-  gem 'web-console'
-  gem 'listen'
-  gem 'spring'
-  gem 'spring-watcher-listen'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'debase'
+  gem 'faker'
+  gem 'listen'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
-  gem 'debase'
   gem 'ruby-debug-ide'
-  gem 'faker'
+  gem 'spring'
+  gem 'spring-watcher-listen'
+  gem 'web-console'
 end
 
 group :test do
