@@ -23,7 +23,7 @@ RSpec.describe Micropost, type: :model do
       end
 
       context '空文字の時' do
-        before { micropost.content = ' '}
+        before { micropost.content = ' ' }
         it '無効であること' do
           expect(micropost).to be_invalid
         end

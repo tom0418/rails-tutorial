@@ -44,7 +44,6 @@ RSpec.describe User, type: :model do
   describe 'アソシエーション' do
     let!(:user) { create(:user, :with_default_microposts) }
     it 'ユーザーを削除した時、micropostも削除されること' do
-      user.save
       expect { user.destroy }.to change(Micropost, :count).by(-1)
     end
   end
