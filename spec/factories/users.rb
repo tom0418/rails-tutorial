@@ -11,14 +11,26 @@ FactoryBot.define do
 
     trait :with_default_microposts do
       after(:create) do |user|
-        user.microposts << FactoryBot.build(:micropost, content: 'Test')
+        user.microposts.create!(content: 'Test micropost.')
       end
     end
 
     trait :with_sorted_microposts do
       after(:build) do |user|
-        user.microposts << FactoryBot.build(:micropost, content: 'Test Test', created_at: 10.minutes.ago)
-        user.microposts << FactoryBot.build(:micropost, content: 'Most Resent', created_at: Time.zone.now)
+        user.microposts.build(content: 'Test micropost.', created_at: 10.minutes.ago)
+        user.microposts.build(content: 'Most Resent.', created_at: Time.zone.now)
+      end
+    end
+
+    trait :with_over30_microposts do
+      transient do
+        posts_count { 31 }
+      end
+
+      after(:create) do |user, evaluator|
+        evaluator.posts_count.times do |n|
+          user.microposts.create!(content: "Test micropost #{n}.")
+        end
       end
     end
   end

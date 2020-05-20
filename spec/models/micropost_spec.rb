@@ -11,6 +11,10 @@ RSpec.describe Micropost, type: :model do
     it 'user_id' do
       expect(micropost).to respond_to(:user_id)
     end
+
+    it 'picture' do
+      expect(micropost).to respond_to(:picture)
+    end
   end
 
   describe 'バリデーション' do
