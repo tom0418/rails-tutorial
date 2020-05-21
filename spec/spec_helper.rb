@@ -96,4 +96,11 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
   config.include Capybara::DSL
+
+  # Delete all images after testing
+  config.after(:all) do
+    if Rails.env.test?
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
+    end
+  end
 end
