@@ -6,6 +6,20 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # before filter
+
+  # サインイン済みのユーザーかどうか確認
+  def logged_in_user
+    return if logged_in?
+
+    store_location
+    flash[:danger] = 'Please Sign in.'
+    redirect_to signin_url
+  end
+
+  # helper method
+
+  # 現在サインイン中のユーザーを返す
   def current_user
     if (user_id = session[:user_id])
       @current_user ||= User.find_by(id: user_id)
@@ -18,6 +32,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # サインインしているかの判定
   def logged_in?
     !current_user.nil?
   end

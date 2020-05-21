@@ -66,4 +66,5 @@ RSpec.configure do |config|
   config.include Requests::SessionsHelper, type: :request
   config.include Requests::UsersHelper, type: :request
   config.include Requests::PasswordResetsHelper, type: :request
+  config.include Requests::MicropostsHelper, type: :request
 end
