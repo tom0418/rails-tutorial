@@ -45,4 +45,15 @@ class PictureUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+  # Override the directory for testing
+  if Rails.env.test?
+    def cache_dir
+      "#{Rails.root}/spec/support/uploads/tmp"
+    end
+
+    def store_dir
+      "#{Rails.root}/spec/support/uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    end
+  end
 end
