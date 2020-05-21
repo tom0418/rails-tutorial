@@ -138,7 +138,7 @@ RSpec.describe 'Users', type: :request do
   describe '#show' do
     context 'ユーザーが存在する時' do
       context 'アカウントが有効化されている時' do
-        let!(:user) { create(:user) }
+        let!(:user) { create(:user, :with_over30_microposts) }
         before { get user_url(user) }
 
         it '200 OKを返すこと' do
@@ -147,6 +147,14 @@ RSpec.describe 'Users', type: :request do
 
         it 'Profile Pageにリダイレクトすること' do
           expect(response).to render_template('users/show')
+        end
+
+        it '30番目のmicropostが取得できること' do
+          expect(response.body).to include('Test micropost 30.')
+        end
+
+        it '31番目のmicropostが取得できないこと' do
+          expect(response.body).not_to include('Test micropost 31.')
         end
       end
 

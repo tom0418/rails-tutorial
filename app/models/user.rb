@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.freeze
 
+  has_many :microposts, dependent: :destroy
+
   validates :name, presence: true,
                    length: { maximum: 50 }
   validates :email, presence: true,
@@ -74,7 +76,14 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
+  # TODO: feedメソッドは試作段階
+  def feed
+    Micropost.where('user_id = ?', id)
+  end
+
   private
+
+  # before filter
 
   # メールアドレスをすべて小文字にする
   def downcase_email

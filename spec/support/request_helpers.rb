@@ -56,4 +56,11 @@ module Requests
                                    password_confirmation: confirmation } }
     end
   end
+
+  module MicropostsHelper
+    def post_microposts(url, content: 'Test micropost.', picture: nil)
+      post url, params: { micropost: { content: content,
+                                       picture: picture } }
+    end
+  end
 end
