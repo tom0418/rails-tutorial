@@ -52,10 +52,15 @@ Naming/AccessorMethodName:
 
 #################### Rails ###############################
 
+# デフォルトで作成されるファイルに関しては除外
+Rails/FilePath:
+  Exclude:
+    - 'spec/**/*.rb'
+
 # spec では skipping-validations にリストされている検証をスキップするメソッドの使用を許可
 Rails/SkipsModelValidations:
   Exclude:
-    - 'spec/**/*rb'
+    - 'spec/**/*.rb'
 
 #################### Style ###############################
 
