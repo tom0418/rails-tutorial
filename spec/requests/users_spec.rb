@@ -150,11 +150,11 @@ RSpec.describe 'Users', type: :request do
         end
 
         it '30番目のmicropostが取得できること' do
-          expect(response.body).to include('Test micropost 30.')
+          expect(response.body).to include('Test micropost 29.')
         end
 
         it '31番目のmicropostが取得できないこと' do
-          expect(response.body).not_to include('Test micropost 31.')
+          expect(response.body).not_to include('Test micropost 30.')
         end
       end
 
@@ -337,6 +337,46 @@ RSpec.describe 'Users', type: :request do
         it '/signinにリダイレクトされること' do
           expect(response).to redirect_to signin_url
         end
+      end
+    end
+  end
+
+  describe 'users/:id/following' do
+    let!(:user) { create(:user) }
+    let!(:other_user) { create(:user, name: 'Other User', email: 'test-other@example.com') }
+    before { Relationship.create(follower_id: user.id, followed_id: other_user.id) }
+    before { Relationship.create(follower_id: other_user.id, followed_id: user.id) }
+
+    context '未サインインの時' do
+      it 'サインインページにリダイレクトすること' do
+        get following_user_url(user)
+        expect(response).to redirect_to signin_url
+      end
+    end
+
+    context 'サインイン済みの時' do
+      before { sign_in(signin_url) }
+      it '200 OKを返すこと' do
+        get following_user_url(user)
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
+  describe 'users/:id/followers' do
+    let!(:user) { create(:user) }
+    context '未サインインの時' do
+      it 'サインインページにリダイレクトされること' do
+        get followers_user_url(user)
+        expect(response).to redirect_to signin_url
+      end
+    end
+
+    context 'サインイン済みの時' do
+      before { sign_in(signin_url) }
+      it '200 OKを返すこと' do
+        get followers_user_url(user)
+        expect(response.status).to eq(200)
       end
     end
   end

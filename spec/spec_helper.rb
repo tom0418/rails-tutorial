@@ -99,8 +99,10 @@ RSpec.configure do |config|
 
   # Delete all images after testing
   config.after(:all) do
-    if Rails.env.test?
-      FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
-    end
+    # if Rails.env.test?
+    #   FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
+    # end
+
+    FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"]) if Rails.env.test?
   end
 end
