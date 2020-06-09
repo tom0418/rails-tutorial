@@ -42,9 +42,63 @@ RSpec.describe User, type: :model do
   end
 
   describe 'アソシエーション' do
-    let!(:user) { create(:user, :with_default_microposts) }
-    it 'ユーザーを削除した時、micropostも削除されること' do
-      expect { user.destroy }.to change(Micropost, :count).by(-1)
+    context 'microposts' do
+      let!(:user) { create(:user, :with_default_microposts) }
+      it 'micropostsメソッドが使えること' do
+        expect(user).to respond_to(:microposts)
+      end
+
+      it 'ユーザーを削除した時、micropostも削除されること' do
+        expect { user.destroy }.to change(Micropost, :count).by(-1)
+      end
+    end
+
+    context 'relationships' do
+      before { user.save }
+      let!(:other_user) { create(:user, name: 'Other User', email: 'test-other@example.com') }
+      before { Relationship.create(follower_id: user.id, followed_id: other_user.id) }
+
+      it 'active_relationshipsメソッドが使えること' do
+        expect(user).to respond_to(:active_relationships)
+      end
+
+      it 'passive_relationshipsメソッドが使えること' do
+        expect(user).to respond_to(:passive_relationships)
+      end
+
+      context 'フォロー中のユーザーを削除した時' do
+        it 'Relationshipsテーブルのレコードが1件削除されること' do
+          expect { other_user.destroy }.to change(Relationship, :count).by(-1)
+        end
+
+        it 'フォロー中のユーザーから該当ユーザーが削除されること' do
+          other_user.destroy
+          expect(user.following.include?(other_user)).to be_falsey
+        end
+      end
+
+      context 'フォロワーを削除した時' do
+        it 'Relationshipsテーブルのレコードが1件削除されること' do
+          expect { user.destroy }.to change(Relationship, :count).by(-1)
+        end
+
+        it 'フォロワーから該当ユーザーが削除されること' do
+          user.destroy
+          expect(other_user.followers.include?(user)).to be_falsey
+        end
+      end
+    end
+
+    context 'following' do
+      it 'followingメソッドが使えること' do
+        expect(user).to respond_to(:following)
+      end
+    end
+
+    context 'followers' do
+      it 'followersメソッドが使えること' do
+        expect(user).to respond_to(:followers)
+      end
     end
   end
 
@@ -83,6 +137,18 @@ RSpec.describe User, type: :model do
 
     it '#password_reset_expired?' do
       expect(user).to respond_to(:password_reset_expired?)
+    end
+
+    it '#following?' do
+      expect(user).to respond_to(:following?)
+    end
+
+    it '#follow' do
+      expect(user).to respond_to(:follow)
+    end
+
+    it '#unfollow' do
+      expect(user).to respond_to(:unfollow)
     end
   end
 
@@ -236,6 +302,32 @@ RSpec.describe User, type: :model do
     context 'remember_digestがnilの時' do
       specify 'falseが返されること' do
         expect(user.authenticated?(:remember, ''))
+      end
+    end
+  end
+
+  describe '#follow, #unfollow, #following?の動作' do
+    before { user.save }
+    let!(:other_user) { create(:user, name: 'Other User', email: 'test-other@example.com') }
+
+    context 'フォロー中のユーザーが存在しない時' do
+      it '#following?がfalseを返すこと' do
+        expect(user.following?(other_user)).to be_falsey
+      end
+    end
+
+    context '他のユーザーをフォローした時' do
+      it '#following?がtrueを返すこと' do
+        user.follow(other_user)
+        expect(user.following?(other_user)).to be_truthy
+      end
+    end
+
+    context 'フォロー解除した時' do
+      it '#following?がfalseを返すこと' do
+        user.follow(other_user)
+        user.unfollow(other_user)
+        expect(user.following?(other_user)).to be_falsey
       end
     end
   end

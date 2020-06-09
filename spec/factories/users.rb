@@ -15,6 +15,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_other_user_microposts do
+      after(:create) do |user|
+        user.microposts.create!(content: 'Test other micropost.')
+      end
+    end
+
     trait :with_sorted_microposts do
       after(:build) do |user|
         user.microposts.build(content: 'Test micropost.', created_at: 10.minutes.ago)
@@ -24,7 +30,7 @@ FactoryBot.define do
 
     trait :with_over30_microposts do
       transient do
-        posts_count { 31 }
+        posts_count { 30 }
       end
 
       after(:create) do |user, evaluator|
